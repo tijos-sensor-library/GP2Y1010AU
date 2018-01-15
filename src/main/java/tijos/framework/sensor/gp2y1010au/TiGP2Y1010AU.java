@@ -7,15 +7,12 @@ import tijos.framework.devicecenter.TiGPIO;
 import tijos.util.Delay;
 
 /**
- * SHARP GP2Y1010AU0F Dust Density Sensor library for TiJOS 
- * Based on https://github.com/lixplor/arduino-GP2Y1010AU0F-lib
+ * SHARP GP2Y1010AU0F Dust Density Sensor library for TiJOS  * Based on https://github.com/lixplor/arduino-GP2Y1010AU0F-lib
  * 
+ *
  */
 
 public class TiGP2Y1010AU {
-
-	public static final int DELAY_LED_OFF = 10;
-
 	/**
 	 * Air quality
 	 */
@@ -51,10 +48,11 @@ public class TiGP2Y1010AU {
 	public double getOutputV() throws IOException {
 
 		this.gpioObj.writePin(this.pinId, 0);
+		Delay.usDelay(280);
 		double outputV = this.adcObj.getVoltage();
+		Delay.usDelay(40);
 		this.gpioObj.writePin(this.pinId, 1);
-
-		Delay.msDelay(DELAY_LED_OFF);
+		Delay.usDelay(9680);
 
 		return outputV;
 	}
