@@ -4,10 +4,11 @@ import java.io.IOException;
 
 import tijos.framework.devicecenter.TiADC;
 import tijos.framework.devicecenter.TiGPIO;
-import tijos.util.Delay;
+import tijos.framework.util.Delay;
 
 /**
- * SHARP GP2Y1010AU0F Dust Density Sensor library for TiJOS  * Based on https://github.com/lixplor/arduino-GP2Y1010AU0F-lib
+ * SHARP GP2Y1010AU0F Dust Density Sensor library for TiJOS Based on
+ * https://github.com/lixplor/arduino-GP2Y1010AU0F-lib
  * 
  *
  */
@@ -23,11 +24,13 @@ public class TiGP2Y1010AU {
 	private TiGPIO gpioObj = null;
 	private TiADC adcObj = null;
 	private int pinId = 0;
+	private int adcChn = 0;
 
-	public TiGP2Y1010AU(TiGPIO gpio, int pin, TiADC adc) {
+	public TiGP2Y1010AU(TiGPIO gpio, int pin, TiADC adc, int chn) {
 		gpioObj = gpio;
 		adcObj = adc;
 		this.pinId = pin;
+		this.adcChn = chn;
 	}
 
 	/**
@@ -36,7 +39,7 @@ public class TiGP2Y1010AU {
 	 * @throws IOException
 	 */
 	public void initialize() throws IOException {
-		this.gpioObj.setPinMode(pinId, TiGPIO.MODE_OUTPUT_PP, TiGPIO.MODE_PULL_NONE);
+		this.gpioObj.setWorkMode(pinId, TiGPIO.OUTPUT_PP);
 	}
 
 	/**
@@ -49,7 +52,7 @@ public class TiGP2Y1010AU {
 
 		this.gpioObj.writePin(this.pinId, 0);
 		Delay.usDelay(280);
-		double outputV = this.adcObj.getVoltage();
+		double outputV = this.adcObj.getVoltageValue(this.adcChn);
 		Delay.usDelay(40);
 		this.gpioObj.writePin(this.pinId, 1);
 		Delay.usDelay(9680);

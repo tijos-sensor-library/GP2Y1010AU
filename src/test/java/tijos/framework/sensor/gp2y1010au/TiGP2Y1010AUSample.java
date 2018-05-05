@@ -5,7 +5,7 @@ import java.io.IOException;
 import tijos.framework.devicecenter.TiADC;
 import tijos.framework.devicecenter.TiGPIO;
 import tijos.framework.sensor.gp2y1010au.TiGP2Y1010AU;
-import tijos.util.Delay;
+import tijos.framework.util.Delay;
 
 public class TiGP2Y1010AUSample {
 
@@ -22,22 +22,34 @@ public class TiGP2Y1010AUSample {
 			//GPIO PIN ID of the port
 			int gpioPin0 = 0;
 			
+			int adc_chn = 0;
+			
 			/*
 			 * 资源分配， 将gpioPort与gpioPin0分配给TiGPIO对象gpio0 将adcPort0分配给TiADC对象adc0
 			 */
 			TiGPIO gpio0 = TiGPIO.open(gpioPort0, gpioPin0);
-			TiADC adc0 = TiADC.open(adcPort0);
+			TiADC adc0 = TiADC.open(adcPort0, adc_chn);
+
+			/**
+			 * 设置ADC的参考电压, ESP8266为1.0V
+			 */
+			adc0.setRefVoltageValue(1.0);
+			
+			
 			/*
 			 * 资源绑定， 创建TiGeneralSensor对象并将gpioPort、gpioPortPin和adcPort与其绑定
 			 * Pin0<---->D0 ADC <---->A0
 			 */
-			TiGP2Y1010AU gp2y1014au = new TiGP2Y1010AU(gpio0, gpioPin0, adc0);
+			TiGP2Y1010AU gp2y1014au = new TiGP2Y1010AU(gpio0, gpioPin0, adc0, adc_chn);
 			gp2y1014au.initialize();
 
+			
+			
 			while (true) {
 				try {
 
-					double outputV = gp2y1014au.getOutputV(); 
+					double outputV = gp2y1014au.getOutputV() * 5; //TiKit-T600-ESP8266A 为5倍分压, 请根据实际 电路选择该参考 
+					
 					double ugm3 = gp2y1014au.getDustDensity(outputV); // Dust density
 					double aqi = gp2y1014au.getAQI(ugm3); // aqi
 					TiGP2Y1010AU.AQIGrade gradeInfo = gp2y1014au.getGradeInfo(aqi);
