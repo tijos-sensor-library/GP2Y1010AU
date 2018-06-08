@@ -31,9 +31,9 @@ public class TiGP2Y1010AUSample {
 			TiADC adc0 = TiADC.open(adcPort0, adc_chn);
 
 			/**
-			 * 设置ADC的参考电压, ESP8266为1.0V
+			 * 设置ADC的参考电压, ESP8266为1.0V 5倍分压
 			 */
-			adc0.setRefVoltageValue(1.0);
+			adc0.setRefVoltageValue(1.0, 5);
 			
 			
 			/*
@@ -48,7 +48,7 @@ public class TiGP2Y1010AUSample {
 			while (true) {
 				try {
 
-					double outputV = gp2y1014au.getOutputV() * 5; //TiKit-T600-ESP8266A 为5倍分压, 请根据实际 电路选择该参考 
+					double outputV = gp2y1014au.getOutputV(); 
 					
 					double ugm3 = gp2y1014au.getDustDensity(outputV); // Dust density
 					double aqi = gp2y1014au.getAQI(ugm3); // aqi
